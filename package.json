@@ -1,7 +1,7 @@
 {
-  "name": "videojs-s3bubble-bitrate-switcher",
+  "name": "@s3bubble/videojs-s3bubble-bitrate-switcher",
   "version": "0.0.0",
-  "description": "Switching bitrates for S3Bubble player",
+  "description": "Switching bitrate for S3Bubble player",
   "main": "cjs/plugin.js",
   "module": "es/plugin.js",
   "browser": "dist/videojs-s3bubble-bitrate-switcher.js",
@@ -71,22 +71,23 @@
   },
   "dependencies": {
     "global": "^4.4.0",
-    "video.js": "^6 || ^7"
+    "video.js": "^7.17.0",
+    "videojs-contrib-quality-levels": "^2.1.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.13.16",
-    "@babel/runtime": "^7.14.0",
+    "@babel/cli": "^7.16.8",
+    "@babel/runtime": "^7.16.7",
     "@videojs/babel-config": "^0.2.0",
     "@videojs/generator-helpers": "~2.0.2",
-    "jsdoc": "~3.6.6",
-    "karma": "^6.3.2",
-    "postcss": "^8.2.13",
+    "jsdoc": "^3.6.7",
+    "karma": "^6.3.10",
+    "postcss": "^8.4.5",
     "postcss-cli": "^8.3.1",
-    "rollup": "^2.46.0",
+    "rollup": "^2.63.0",
     "sinon": "^9.1.0",
-    "videojs-generate-karma-config": "~8.0.0",
+    "videojs-generate-karma-config": "^8.0.1",
     "videojs-generate-postcss-config": "~3.0.0",
-    "videojs-generate-rollup-config": "~6.2.0",
+    "videojs-generate-rollup-config": "^6.2.2",
     "videojs-generator-verify": "~3.0.3",
     "videojs-languages": "^2.0.0",
     "videojs-standard": "^8.0.4"
