@@ -22,9 +22,9 @@ const defaults = {
  *
  * See: https://blog.videojs.com/feature-spotlight-advanced-plugins/
  */
-class DashHlsBitrateSwitcher extends Plugin {
+class S3BubbleBitrateSwitcher extends Plugin {
   /**
-   * Create a DashHlsBitrateSwitcher plugin instance.
+   * Create a S3BubbleBitrateSwitcher plugin instance.
    *
    * @param  {Player} player
    *         A Video.js Player instance.
@@ -45,7 +45,7 @@ class DashHlsBitrateSwitcher extends Plugin {
     this.options = videojs.mergeOptions(defaults, options);
 
     this.player.ready(() => {
-      this.player.addClass('vjs-dash-hls-bitrate-switcher');
+      this.player.addClass('vjs-s3bubble-bitrate-switcher');
       if (this.options.showInfo) {
         self.buildUi();
       }
@@ -236,12 +236,12 @@ class DashHlsBitrateSwitcher extends Plugin {
 }
 
 // Define default values for the plugin's `state` object here.
-DashHlsBitrateSwitcher.defaultState = {};
+S3BubbleBitrateSwitcher.defaultState = {};
 
 // Include the version number.
-DashHlsBitrateSwitcher.VERSION = VERSION;
+S3BubbleBitrateSwitcher.VERSION = VERSION;
 
 // Register the plugin with video.js.
-videojs.registerPlugin('dashHlsBitrateSwitcher', DashHlsBitrateSwitcher);
+videojs.registerPlugin('s3BubbleBitrateSwitcher', S3BubbleBitrateSwitcher);
 
-export default DashHlsBitrateSwitcher;
+export default S3BubbleBitrateSwitcher;
