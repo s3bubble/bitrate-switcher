@@ -58,8 +58,10 @@ class S3BubbleBitrateSwitcher extends Plugin {
       }
 
       this.one(((videojs.browser.IS_IOS) ? 'canplaythrough' : 'loadedmetadata'), function(_evt) {
+        console.log('this.currentSrc()', this.currentSrc());
         if (['m3u8', 'mpd'].includes(self.getExtension(this.currentSrc()))) {
           self.qualityLevels = this.qualityLevels();
+          console.log('self.qualityLevels', self.qualityLevels);
           if (self.qualityLevels.levels_.length > 1) {
             self.init();
           }
