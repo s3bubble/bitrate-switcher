@@ -1,6 +1,6 @@
 {
   "name": "@s3bubble/videojs-s3bubble-bitrate-switcher",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Switching bitrate for S3Bubble player",
   "main": "cjs/plugin.js",
   "module": "es/plugin.js",
@@ -70,6 +70,7 @@
     "hooks": {}
   },
   "dependencies": {
+    "@s3bubble/videojs-contrib-dash-with-quality-levels": "^5.1.2",
     "global": "^4.4.0",
     "video.js": "^7.17.0",
     "videojs-contrib-quality-levels": "^2.1.0"

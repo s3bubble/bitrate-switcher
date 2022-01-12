@@ -51,20 +51,28 @@ class S3BubbleBitrateSwitcher extends Plugin {
       }
     });
 
+    this.player.on("dashQualityLevels", function(e) {
+      let levels = e.target.player.dashQualityLevels;
+      self.qualityLevels = e.target.player.dashQualityLevels;
+      if (self.qualityLevels.length > 1) {
+        self.dash();
+      }
+    });
+
+    this.player.on(((videojs.browser.IS_IOS) ? 'canplaythrough' : 'loadedmetadata'), function(_evt) {
+      if (['m3u8', 'mpd'].includes(self.getExtension(this.currentSrc()))) {
+        self.qualityLevels = this.qualityLevels();
+        if (self.qualityLevels.levels_.length > 1) {
+          self.hls();
+        }
+      }
+    });
+
     this.player.on('loadstart', function(_event) {
       if (this.getChild('controlBar').getChild('RatesButton')) {
         this.getChild('controlBar').removeChild('RatesButton');
-        self.qualityLevels.off('change');
+        this.getChild('streamInfo').updateTextContent('');
       }
-
-      this.one(((videojs.browser.IS_IOS) ? 'canplaythrough' : 'loadedmetadata'), function(_evt) {
-        if (['m3u8', 'mpd'].includes(self.getExtension(this.currentSrc()))) {
-          self.qualityLevels = this.qualityLevels();
-          if (self.qualityLevels.levels_.length > 1) {
-            self.init();
-          }
-        }
-      });
     });
   }
 
@@ -74,7 +82,7 @@ class S3BubbleBitrateSwitcher extends Plugin {
 
   sortProperties(obj) {
 
-    obj = obj.levels_;
+    obj = (obj.levels_) ? obj.levels_ : obj;
 
     // convert object into array
     const sortable = [];
@@ -131,7 +139,7 @@ class S3BubbleBitrateSwitcher extends Plugin {
 
   }
 
-  init(levels) {
+  hls() {
 
     const self = this;
     class RatesButton extends MenuButton {
@@ -160,13 +168,12 @@ class S3BubbleBitrateSwitcher extends Plugin {
         const qualityLevels = self.sortProperties(self.qualityLevels);
 
         qualityLevels.forEach(level => {
-          // bitrate need to be set
+          // bitrate needs to be set
           if (level.bitrate) {
             items.push(new PlayBackRatesBtn(this.player(), {
               levels: qualityLevels,
-              label: `${self.formatRendition(level)}`,
               bitrate: level.bitrate,
-              type: level.bitrate
+              label: `${self.formatRendition(level)}`,
             }));
           }
 
@@ -194,17 +201,77 @@ class S3BubbleBitrateSwitcher extends Plugin {
     self.qualityLevels.on('change', function() {
       let rendition = self.qualityLevels[self.qualityLevels.selectedIndex];
       self.player.getChild('controlBar').getChild('ratesButton').updateSelected(rendition);
-      if (self.player.getChild('streamInfo')) {
-        self.player.getChild('streamInfo').updateTextContent(`<div class="vjs-stream-info-box">Dimensions:${rendition.width}x${rendition.height}<br/>Bitrate:${self.formatBitrate(rendition.bitrate)}<br/>Renditions:${self.qualityLevels.length}<br/>Type:${self.player.currentType()}</div>`);
-      }
     });
 
     // Set initial value
     let rendition = self.qualityLevels[self.qualityLevels.selectedIndex];
     self.player.getChild('controlBar').getChild('ratesButton').updateSelected(rendition);
-    if (self.player.getChild('streamInfo')) {
-      self.player.getChild('streamInfo').updateTextContent(`<div class="vjs-stream-info-box">Dimensions:${rendition.width}x${rendition.height}<br/>Bitrate:${self.formatBitrate(rendition.bitrate)}<br/>Renditions:${self.qualityLevels.length}<br/>Type:${self.player.currentType()}</div>`);
+
+  }
+
+  dash() {
+
+    const self = this;
+    class RatesButton extends MenuButton {
+      constructor(player, options) {
+        super(player, options);
+      }
+      buildCSSClass() {
+        return `vjs-icon-cog ${super.buildCSSClass()}`;
+      }
+      buildWrapperCSSClass() {
+        return `vjs-dash-hls-bitrate-switcher-menu ${super.buildWrapperCSSClass()}`;
+      }
+      updateSelected(item) {
+
+        this.items.forEach(child => {
+          if (item.bitrate === parseInt(child.el().getAttribute('data-bitrate'))) {
+            child.addClass('vjs-selected');
+          } else {
+            child.removeClass('vjs-selected');
+          }
+        });
+
+      }
+      createItems(items = []) {
+
+        items.push(new PlayBackRatesBtn(this.player(), {
+          levels: undefined,
+          label: `Auto`,
+        }));
+
+        const qualityLevels = self.sortProperties(self.qualityLevels);
+        qualityLevels.forEach(level => {
+          // bitrate needs to be set
+          if (level.bitrate) {
+            items.push(new PlayBackRatesBtn(this.player(), {
+              levels: level,
+              bitrate: level.bitrate,
+              label: `${self.formatRendition(level)}`,
+            }));
+          }
+
+        });
+
+        return items;
+
+      }
     }
+
+    videojs.registerComponent('RatesButton', RatesButton);
+
+    const comps = self.player.getChild('controlBar').children().length;
+
+    if (self.player.getChild('controlBar').getChild('fullscreenToggle')) {
+
+      self.player.getChild('controlBar').addChild('ratesButton', {}, (comps - 1));
+
+    } else {
+
+      self.player.getChild('controlBar').addChild('ratesButton', {}, comps);
+
+    }
+
   }
 
   buildUi() {
