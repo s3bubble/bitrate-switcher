@@ -9,6 +9,9 @@ export class PlayBackRatesBtn extends MenuItem {
     this.label = options.label;
     this.levels = options.levels;
     this.bitrate = options.bitrate;
+    if (this.label === 'Auto') {
+      this.addClass('vjs-selected');
+    }
     this.setAttribute('data-bitrate', this.bitrate);
 
   }
